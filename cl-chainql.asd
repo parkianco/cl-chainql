@@ -6,7 +6,7 @@
 
 (asdf:defsystem #:cl-chainql
   :description "SQL-like query language for blockchain data"
-  :author "CLPIC Contributors"
+  :author "Parkian Company LLC"
   :license "BSD-3-Clause"
   :version "0.1.0"
   :serial t
