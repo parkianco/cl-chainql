@@ -1,0 +1,49 @@
+# ASDF cache
+*.fasl
+*.lx64fsl
+*.dx64fsl
+*.lx32fsl
+*.dx32fsl
+*.x86f
+*.sparcf
+*.sparc64f
+*.hpux
+*.hp64
+*.hp8000
+*.so
+*.o
+*.a
+
+# SBCL
+*.core
+
+# CCL
+*.wx64fsl
+*.wx32fsl
+
+# ABCL
+*.abcl
+*.class
+
+# ECL
+*.eclh
+
+# Backup files
+*~
+\#*\#
+.\#*
+
+# Editor files
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build output
+/build/
+/bin/
+/lib/
