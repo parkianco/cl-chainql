@@ -34,4 +34,6 @@
                              (:file "parser-test")
                              (:file "executor-test"))))
   :perform (test-op (o c)
-             (uiop:symbol-call :cl-chainql.test :run-tests)))
+             (let ((result (uiop:symbol-call :cl-chainql.test :run-tests)))
+               (unless result
+                 (error "Tests failed")))))
