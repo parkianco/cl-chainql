@@ -41,6 +41,6 @@
 
 (deftest test-tokenize-identifiers
   (let ((tokens (tokenize "SELECT block_height, tx_count FROM blocks")))
-    (let ((ids (remove-if-not (lambda (t) (eq :identifier (token-type t))) tokens)))
+    (let ((ids (remove-if-not (lambda (tok) (eq :identifier (token-type tok))) tokens)))
       (assert-equal 3 (length ids))
       (assert-equal "block_height" (token-value (first ids))))))
