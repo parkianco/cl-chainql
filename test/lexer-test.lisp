@@ -14,10 +14,10 @@
 (deftest test-tokenize-where-clause
   (let ((tokens (tokenize "SELECT * FROM tx WHERE value > 100")))
     (assert-true (> (length tokens) 6))
-    (let ((where-tok (find :keyword tokens :key #'token-type
-                           :test (lambda (type tok)
-                                   (and (eq type (token-type tok))
-                                        (string-equal "WHERE" (token-value tok)))))))
+    (let ((where-tok (find-if (lambda (tok)
+                                (and (eq :keyword (token-type tok))
+                                     (string-equal "WHERE" (token-value tok))))
+                              tokens)))
       (assert-true where-tok))))
 
 (deftest test-tokenize-string-literal

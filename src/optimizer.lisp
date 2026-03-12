@@ -19,17 +19,41 @@
     plan))
 
 (defun build-initial-plan (ast)
-  "Build initial execution plan from AST."
-  (let ((ops nil))
-    (dolist (component (query-ast-components ast))
-      (case (car component)
-        (:from (push (cons :scan (from-clause-tables (cdr component))) ops))
-        (:where (push (cons :filter (where-clause-condition (cdr component))) ops))
-        (:select (push (cons :project (select-clause-columns (cdr component))) ops))
-        (:order (push (cons :sort (order-clause-columns (cdr component))) ops))
-        (:group (push (cons :aggregate (group-clause-columns (cdr component))) ops))
-        (:having (push (cons :filter-aggregate (having-clause-condition (cdr component))) ops))
-        (:limit (push (cons :limit (limit-clause-count (cdr component))) ops))))
+  "Build initial execution plan from AST.
+Operations are emitted in execution order: scan, filter, aggregate,
+filter-aggregate, sort, project, limit."
+  (let ((components (query-ast-components ast))
+        (ops nil))
+    (flet ((find-component (key)
+             (cdr (assoc key components))))
+      ;; 1. Scan (FROM)
+      (let ((from (find-component :from)))
+        (when from
+          (push (cons :scan (from-clause-tables from)) ops)))
+      ;; 2. Filter (WHERE)
+      (let ((where (find-component :where)))
+        (when where
+          (push (cons :filter (where-clause-condition where)) ops)))
+      ;; 3. Aggregate (GROUP BY)
+      (let ((group (find-component :group)))
+        (when group
+          (push (cons :aggregate (group-clause-columns group)) ops)))
+      ;; 4. Filter aggregate (HAVING)
+      (let ((having (find-component :having)))
+        (when having
+          (push (cons :filter-aggregate (having-clause-condition having)) ops)))
+      ;; 5. Sort (ORDER BY)
+      (let ((order (find-component :order)))
+        (when order
+          (push (cons :sort (order-clause-columns order)) ops)))
+      ;; 6. Project (SELECT columns)
+      (let ((sel (find-component :select)))
+        (when sel
+          (push (cons :project (select-clause-columns sel)) ops)))
+      ;; 7. Limit
+      (let ((lim (find-component :limit)))
+        (when lim
+          (push (cons :limit (limit-clause-count lim)) ops))))
     (make-query-plan :operations (nreverse ops))))
 
 (defun apply-optimizations (plan)
