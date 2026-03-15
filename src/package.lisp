@@ -10,7 +10,12 @@
   (:use #:cl)
   (:nicknames #:chainql)
   (:export
-   #:with-chainql-timing
+   #:sigmoid
+   #:relu
+   #:dot-product
+   #:normalize
+   #:compute-layer
+#:with-chainql-timing
    #:chainql-batch-process
    #:chainql-health-check;; Query parsing
    #:parse-query
