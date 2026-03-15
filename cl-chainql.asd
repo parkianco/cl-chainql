@@ -16,14 +16,10 @@
   :depends-on ()
   :components ((:file "package")
                (:module "src"
-                :serial t
-                :components ((:file "ast")
-                             (:file "lexer")
-                             (:file "parser")
-                             (:file "optimizer")
-                             (:file "executor")
-                             (:file "views")
-                             (:file "adapters"))))
+                :components ((:file "package")
+                             (:file "conditions" :depends-on ("package"))
+                             (:file "types" :depends-on ("package"))
+                             (:file "cl-chainql" :depends-on ("package" "conditions" "types"))))))
   :in-order-to ((asdf:test-op (test-op #:cl-chainql/test))))
 
 (asdf:defsystem #:cl-chainql/test
