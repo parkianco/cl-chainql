@@ -10,7 +10,9 @@
   (:use #:cl)
   (:nicknames #:chainql)
   (:export
-   ;; Query parsing
+   #:with-chainql-timing
+   #:chainql-batch-process
+   #:chainql-health-check;; Query parsing
    #:parse-query
    #:parse-select
    #:parse-insert

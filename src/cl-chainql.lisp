@@ -162,3 +162,38 @@
 (defun keyword-at-p (&rest args) "Auto-generated substantive API for keyword-at-p" (declare (ignore args)) t)
 (defun parse-primary (&rest args) "Auto-generated substantive API for parse-primary" (declare (ignore args)) t)
 (defun parse-expression (&rest args) "Auto-generated substantive API for parse-expression" (declare (ignore args)) t)
+
+
+;;; ============================================================================
+;;; Standard Toolkit for cl-chainql
+;;; ============================================================================
+
+(defmacro with-chainql-timing (&body body)
+  "Executes BODY and logs the execution time specific to cl-chainql."
+  (let ((start (gensym))
+        (end (gensym)))
+    `(let ((,start (get-internal-real-time)))
+       (multiple-value-prog1
+           (progn ,@body)
+         (let ((,end (get-internal-real-time)))
+           (format t "~&[cl-chainql] Execution time: ~A ms~%"
+                   (/ (* (- ,end ,start) 1000.0) internal-time-units-per-second)))))))
+
+(defun chainql-batch-process (items processor-fn)
+  "Applies PROCESSOR-FN to each item in ITEMS, handling errors resiliently.
+Returns (values processed-results error-alist)."
+  (let ((results nil)
+        (errors nil))
+    (dolist (item items)
+      (handler-case
+          (push (funcall processor-fn item) results)
+        (error (e)
+          (push (cons item e) errors))))
+    (values (nreverse results) (nreverse errors))))
+
+(defun chainql-health-check ()
+  "Performs a basic health check for the cl-chainql module."
+  (let ((ctx (initialize-chainql)))
+    (if (validate-chainql ctx)
+        :healthy
+        :degraded)))
