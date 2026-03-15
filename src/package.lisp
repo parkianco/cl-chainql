@@ -10,6 +10,8 @@
   (:use #:cl)
   (:nicknames #:chainql)
   (:export
+   #:matrix-multiply
+   #:soft-max
    #:sigmoid
    #:relu
    #:dot-product
